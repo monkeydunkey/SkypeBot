@@ -1,0 +1,30 @@
+{
+  "name": "skypebot",
+  "version": "1.0.0",
+  "description": "just a simple test bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/monkeydunkey/SkypeBot.git"
+  },
+  "keywords": [
+    "demandgen",
+    "skypebot"
+  ],
+  "engines": {
+          "node": ">=5.6.0"
+      },
+  "author": "shashank Bhushan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/monkeydunkey/SkypeBot/issues"
+  },
+  "homepage": "https://github.com/monkeydunkey/SkypeBot#readme",
+  "dependencies": {
+    "restify": "^4.0.4",
+    "skype-sdk": "file:skype-sdk.tar.gz"
+  }
+}

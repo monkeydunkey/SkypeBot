@@ -18,7 +18,13 @@ botService.on('contactAdded', (bot, data) => {
 });
 
 botService.on('personalMessage', (bot, data) => {
-    bot.reply(`Hey ${data.from}. Thank you for your message: "${data.content}".`, true);
+    var sReturnMessage = "",
+        iRandomValue = Math.floor((Math.random() * data.content.length) + 1),
+        iCount = 0;
+    for(iCount = 0; iCount < iRandomValue; iCount++){
+      sReturnMessage += "Hodor ";
+    }
+    bot.reply(sReturnMessage, true);
 });
 
 const server = restify.createServer();

@@ -1,6 +1,7 @@
 const fs = require('fs');
 const restify = require('restify');
 const skype = require('skype-sdk');
+const brain = require('./brain');
 
 var oConfig = JSON.parse(fs.readFileSync('config.json', 'utf8'));
 const botService = new skype.BotService({
@@ -18,6 +19,9 @@ botService.on('contactAdded', (bot, data) => {
 });
 
 botService.on('personalMessage', (bot, data) => {
+    if(data.content.indexOf("/meme") > 0){
+        bot.reply(brain.oScriptLists["meme"].reply("","",""), true);
+    } else {
     var sReturnMessage = "",
         iRandomValue = Math.floor((Math.random() * data.content.length) + 1),
         iCount = 0;
@@ -25,7 +29,9 @@ botService.on('personalMessage', (bot, data) => {
       sReturnMessage += "Hodor ";
     }
     bot.reply(sReturnMessage, true);
+  }
 });
+
 
 const server = restify.createServer();
 server.post('/v1/chat', skype.messagingHandler(botService));

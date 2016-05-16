@@ -19,7 +19,8 @@ botService.on('contactAdded', (bot, data) => {
 });
 
 botService.on('personalMessage', (bot, data) => {
-    messageHandlerHub(bot,data);
+  
+    brain.messageHandlerHub(bot,data);
 });
 
 

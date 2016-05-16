@@ -19,22 +19,7 @@ botService.on('contactAdded', (bot, data) => {
 });
 
 botService.on('personalMessage', (bot, data) => {
-  var messageCommand = brain.commandExtractor(data.content); //Checking if there is any command associated with the message
-      sReturnMessage = "",
-      iRandomValue = Math.floor((Math.random() * data.content.length) + 1),
-      iCount = 0;
-  if(messageCommand != null){ // If there is a command
-    if(oConfig.scripts.hasOwnProperty(messageCommand.replace("-",""))){ // If the command specified actually exists
-        sReturnMessage = brain.oScriptLists[messageCommand.replace("-","")].reply(data.content) ;
-    } else {
-      sReturnMessage = brain.help();
-    }
-  } else { // create a string of random 'HODOR' words
-    for(iCount = 0; iCount < iRandomValue; iCount++){
-      sReturnMessage += "Hodor ";
-    }
-  }
-  bot.reply(sReturnMessage, true);
+    messageHandlerHub(bot,data);
 });
 
 

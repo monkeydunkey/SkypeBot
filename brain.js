@@ -30,11 +30,11 @@ var hodorGenerator = function (data) {
 
 // This is callback/message sending function
 var sendMessage = function (bot, data){
-  console.log(data);
+  
     if(typeof data === "string"){
       bot.reply(data,true);
     } else if(typeof data === "object") {
-      let oAttachmentData = {},
+      var oAttachmentData = {},
           aPropertyList = ["type","binaryContent"];
           bAreRequirementsMet = true;
       oAttachmentData.name = data.name || "";
@@ -59,7 +59,7 @@ var messageHandlerHub = function (bot, data){
   var messageCommand = commandExtractor(data.content), //Checking if there is any command associated with the message
       sReturnMessage = "";
 
-  sReturnMessage = (messageCommand != null) ? (oConfig.scripts.hasOwnProperty(messageCommand[0].replace("-",""))) ? oScriptLists[messageCommand[0].replace("-","")].reply(data.content, bot) : brain.help() : hodorGenerator(data);
+  sReturnMessage = (messageCommand != null) ? (oConfig.scripts.hasOwnProperty(messageCommand[0].replace("-",""))) ? oScriptLists[messageCommand[0].replace("-","")].reply(data.content, bot, sendMessage) : brain.help() : hodorGenerator(data);
   sendMessage(bot,sReturnMessage);
 }
 

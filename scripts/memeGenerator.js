@@ -1,3 +1,10 @@
+/*
+  Meme Generator: This script craetes memes based on the templates provided.
+  ToDo: Add image post functionality instead of the current image URL
+  ToDo: Store the templates so that aliases can be used instead of the actual template URL
+*/
+
+
 // reference to the brain of the bot
 const brain = require('../brain.js');
 const request = require('request');
@@ -6,7 +13,7 @@ var CommandPatt = /\[(.*?)\]/g, // This regex pattern is used to map the require
     APIUrl = 'http://memegen.link';
 
 //Uses callback function to return the API response
-var getTemplates = function(bot, callback){
+function getTemplates (bot, callback){
     request(APIUrl + '/templates', function (error, response, body) {
       if (!error && response.statusCode == 200) {
         body = body.replace("{","").replace("}","").replace(/", "/g,"\n");
@@ -16,8 +23,7 @@ var getTemplates = function(bot, callback){
   return "...";
 }
 
-var getMeme = function(bot, callback, templateLink, upperText, lowerText){
-
+function getMeme (bot, callback, templateLink, upperText, lowerText){
   request(templateLink + '/' + upperText + '/' + lowerText , function (error, response, body) {
     if (!error && response.statusCode == 200) {
       bodyParsed = JSON.parse(body);
@@ -49,6 +55,10 @@ var help = function(){
   return "USAGE: -meme [templateLink] [Top Message; Lower Message]  \n To get the template links visit - http://memegen.link/templates/ or write -meme [template]";
 }
 
+// This runs any default functionality required by the script
+var wakeUp = function(){
+  return;
+}
 module.exports = {
-    reply, help
+    reply, help, wakeUp
 }

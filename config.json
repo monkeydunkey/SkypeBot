@@ -4,6 +4,7 @@
   "botId" : "b7e7bec5-cfa7-400a-a207-c5e364f0bfa4",
   "APP_Password":"HibjbxKeGhFN45Meqa2QVm8",
   "scripts" : {
-    "meme" : "./scripts/memeGenerator.js"
+    "meme" : "./scripts/memeGenerator.js",
+    "default" : "./scripts/hodor.js"
   }
 }

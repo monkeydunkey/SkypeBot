@@ -2,15 +2,17 @@ const fs = require('fs');
 const commandRegexPatt = /-\S+/g; // This regex pattern is used to extract the command from the message
 var oConfig = JSON.parse(fs.readFileSync('config.json', 'utf8')),
     oScriptLists = {};
-// This gets all the user added scripts and its respective files
-for (var obj in oConfig.scripts) {
-    oScriptLists[obj] = require(oConfig.scripts[obj]);
-}
 
-var commandExtractor = function(command){
+function commandExtractor (command){
   return command.match(commandRegexPatt);
 }
-var help = function(){
+// Cleans the commmand and gets the actual command to be run, returns null if no command
+function commandCleaner  ( command ) {
+  var returnCommand = (messageCommand != null) ? oConfig.scripts.hasOwnProperty(messageCommand[0].replace("-","")) ? messageCommand[0].replace("-","") : "default" : null;
+  return returnCommand;
+}
+
+function help (){
   var returnString = "Following are actions I can currently perform \n";
   for (var obj in oScriptLists) {
     returnString += obj.help();
@@ -18,19 +20,20 @@ var help = function(){
   return returnString;
 }
 
-var hodorGenerator = function (data) {
-  var sReturnMessage = "",
-      iRandomValue = Math.floor((Math.random() * data.content.length) + 1),
-      iCount = 0;
-  for(iCount = 0; iCount < iRandomValue; iCount++){
-      sReturnMessage += "Hodor ";
+
+
+// This is the first function to be called when the server starts
+var wakeUp = function() {
+  // This gets all the user added scripts and its respective files
+  for (var obj in oConfig.scripts) {
+      oScriptLists[obj] = require(oConfig.scripts[obj]);
+      oScriptLists[obj].wakeUp();
   }
-  return sReturnMessage;
 }
 
 // This is callback/message sending function
 var sendMessage = function (bot, data){
-  
+
     if(typeof data === "string"){
       bot.reply(data,true);
     } else if(typeof data === "object") {
@@ -55,12 +58,11 @@ var sendMessage = function (bot, data){
 }
 
 var messageHandlerHub = function (bot, data){
-
   var messageCommand = commandExtractor(data.content), //Checking if there is any command associated with the message
       sReturnMessage = "";
-
-  sReturnMessage = (messageCommand != null) ? (oConfig.scripts.hasOwnProperty(messageCommand[0].replace("-",""))) ? oScriptLists[messageCommand[0].replace("-","")].reply(data.content, bot, sendMessage) : brain.help() : hodorGenerator(data);
+  messageCommand = commandCleaner(messageCommand);
+  sReturnMessage = (messageCommand != null) ? oScriptLists[messageCommand].reply(data.content, bot, sendMessage) : brain.help();
   sendMessage(bot,sReturnMessage);
 }
 
-module.exports = {messageHandlerHub, sendMessage}
+module.exports = {messageHandlerHub, sendMessage, wakeUp}

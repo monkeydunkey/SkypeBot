@@ -14,12 +14,13 @@ const botService = new skype.BotService({
     }
 });
 
+brain.wakeUp();
+
 botService.on('contactAdded', (bot, data) => {
     bot.reply(`Hello ${data.fromDisplayName}!`, true);
 });
 
 botService.on('personalMessage', (bot, data) => {
-  
     brain.messageHandlerHub(bot,data);
 });
 

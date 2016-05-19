@@ -7,8 +7,8 @@ function commandExtractor (command){
   return command.match(commandRegexPatt);
 }
 // Cleans the commmand and gets the actual command to be run, returns null if no command
-function commandCleaner  ( command ) {
-  var returnCommand = (messageCommand != null) ? oConfig.scripts.hasOwnProperty(messageCommand[0].replace("-","")) ? messageCommand[0].replace("-","") : "default" : null;
+function commandCleaner  ( messageCommand ) {
+  var returnCommand = (messageCommand != null) ? oConfig.scripts.hasOwnProperty(messageCommand[0].replace("-","")) ? messageCommand[0].replace("-","") : null : "default";
   return returnCommand;
 }
 
@@ -33,7 +33,6 @@ var wakeUp = function() {
 
 // This is callback/message sending function
 var sendMessage = function (bot, data){
-
     if(typeof data === "string"){
       bot.reply(data,true);
     } else if(typeof data === "object") {
@@ -61,7 +60,7 @@ var messageHandlerHub = function (bot, data){
   var messageCommand = commandExtractor(data.content), //Checking if there is any command associated with the message
       sReturnMessage = "";
   messageCommand = commandCleaner(messageCommand);
-  sReturnMessage = (messageCommand != null) ? oScriptLists[messageCommand].reply(data.content, bot, sendMessage) : brain.help();
+  sReturnMessage = (messageCommand != null) ? oScriptLists[messageCommand].reply(data.content, bot, sendMessage) : help();
   sendMessage(bot,sReturnMessage);
 }
 

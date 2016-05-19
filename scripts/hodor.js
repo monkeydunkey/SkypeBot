@@ -16,8 +16,7 @@ var reply = function (data, bot, callback) {
   return sReturnMessage;
 }
  var wakeUp = function() {
-   return;
  }
 module.exports = {
-    reply, help
+    reply, help, wakeUp
 }

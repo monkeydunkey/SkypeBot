@@ -43,8 +43,8 @@ var sendMessage = function (bot, data){
       oAttachmentData.name = data.name || "";
       oAttachmentData.thumbnailContent = data.thumbnailContent || "";
       for(var prop in aPropertyList){
-        if(data.hasOwnProperty(prop)){
-          oAttachmentData[prop] = data[prop];
+        if(data.hasOwnProperty(aPropertyList[prop])){
+          oAttachmentData[aPropertyList[prop]] = data[prop];
         } else {
           bAreRequirementsMet = false;
           bot.reply("Something went wrong while processing the request. Hodor Sad :(",true);

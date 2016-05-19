@@ -7,20 +7,60 @@
 
 // reference to the brain of the bot
 const brain = require('../brain.js');
-const request = require('request');
+var request = require('request');
+var fs = require('fs');
+
 
 var CommandPatt = /\[(.*?)\]/g, // This regex pattern is used to map the required commands out of the text
-    APIUrl = 'http://memegen.link';
+    APIUrl = 'http://memegen.link',
+    oLinkAlias = {};
+
+function receivedError(bot, callback){
+    callback(bot,'There was a problem with processing your request. Please recheck the parametrs or try again later for help please type -meme help')
+}
+
+function makeAPICall(url, data, callback){
+  request(url, function (error, response, body) {
+    if (!error && response.statusCode == 200) {
+      callback(data, body);
+    } else {
+      if(!!data.bot && !!data.callback){
+        receivedError(data.bot, data.callback);
+      } else {console.log("error received: " + error);}
+    }
+  })
+}
+
+function replyWithTemplates(bot, callback){
+  var returnString = "";
+  for(var obj in oLinkAlias){
+    if(oLinkAlias.hasOwnProperty(obj)){
+      returnString += obj + " : " + oLinkAlias[obj] + " \n ";
+    }
+  }
+  callback(bot, returnString);
+}
 
 //Uses callback function to return the API response
 function getTemplates (bot, callback){
-    request(APIUrl + '/templates', function (error, response, body) {
-      if (!error && response.statusCode == 200) {
-        body = body.replace("{","").replace("}","").replace(/", "/g,"\n");
-        callback(bot,body);
-      }
-    })
-  return "...";
+  try {
+    if(Object.keys(oLinkAlias).length === 0 && oLinkAlias.constructor === Object) {
+      fs.readFile('./scripts/memeConfig.json', (err, data) => {
+          if (err) throw err;
+          oLinkAlias = JSON.parse(data);
+          replyWithTemplates(bot, callback);
+        });
+        return "Hold on I am getting the templates";
+    } else {
+      replyWithTemplates(bot, callback);
+    }
+  } catch (e) {
+    populateFileData(bot,callback);
+  }
+}
+
+function getMemeTemplateLink(templateLink){
+  var pattern = (templateLink.indexOf('http://memegen.link/templates/') > 0) ? templateLink : oLinkAlias.hasOwnProperty(templateLink) ? oLinkAlias[templateLink] : "na"
 }
 
 function getMeme (bot, callback, templateLink, upperText, lowerText){
@@ -31,6 +71,22 @@ function getMeme (bot, callback, templateLink, upperText, lowerText){
     }
   })
 return "...";
+}
+
+function processTemplates(data, body){
+  body = JSON.parse(body);
+  oLinkAlias = body;
+  fs.writeFile("./scripts/memeConfig.json", JSON.stringify(body), (err) => {
+    if(err) console.log(err);
+  });
+  if(!!data.bot && !!data.callback){
+      replyWithTemplates(data.bot,data.callback);
+  }
+
+}
+
+function populateFileData(bot,callback){
+    makeAPICall(APIUrl + '/templates',{bot, callback}, processTemplates);
 }
 //There has to be another reply while the script waits for the API to respond
 var reply = function(command,bot, callback){
@@ -52,13 +108,23 @@ var reply = function(command,bot, callback){
 
 // There should be a default help option for each script
 var help = function(){
-  return "USAGE: -meme [templateLink] [Top Message; Lower Message]  \n To get the template links visit - http://memegen.link/templates/ or write -meme [template]";
+  return "USAGE: -meme [templateLink / template name] [Top Message; Lower Message]  \n To get the template links visit - http://memegen.link/templates/ or write -meme [template]";
 }
 
 // This runs any default functionality required by the script
 var wakeUp = function(){
-  return;
+  try {
+    fs.readFile('./scripts/memeConfig.json', (err, data) => {
+      if (err) populateFileData(); //Populating data if no file is present
+      else oLinkAlias = JSON.parse(data);
+      });
+  } catch (err) {
+    // There is no file present
+    populateFileData();
+  }
 }
+
+
 module.exports = {
     reply, help, wakeUp
 }

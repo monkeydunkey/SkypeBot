@@ -14,10 +14,14 @@ function commandCleaner  ( messageCommand ) {
 
 function help (){
   var returnString = "Following are actions I can currently perform \n";
+  var count = 1;
   for (var obj in oScriptLists) {
-    returnString += obj.help();
+    if(oScriptLists.hasOwnProperty(obj)){
+      returnString += count + ". " + oScriptLists[obj].help() + ' \n\n ';
+      count++;
+    }
   }
-  return returnString;
+  return returnString.slice(0, -2);
 }
 
 

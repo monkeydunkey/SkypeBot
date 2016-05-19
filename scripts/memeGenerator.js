@@ -60,14 +60,17 @@ function getTemplates (bot, callback){
 }
 
 function getMemeTemplateLink(templateLink){
-  var pattern = (templateLink.indexOf('http://memegen.link/templates/') > 0) ? templateLink : oLinkAlias.hasOwnProperty(templateLink) ? oLinkAlias[templateLink] : "na"
+  var link = (templateLink.indexOf('http://memegen.link/templates/') > 0) ? templateLink : oLinkAlias.hasOwnProperty(templateLink) ? oLinkAlias[templateLink] : "na";
+  return link;
 }
 
 function getMeme (bot, callback, templateLink, upperText, lowerText){
-  request(templateLink + '/' + upperText + '/' + lowerText , function (error, response, body) {
+  request(getMemeTemplateLink(templateLink) + '/' + upperText + '/' + lowerText , function (error, response, body) {
     if (!error && response.statusCode == 200) {
       bodyParsed = JSON.parse(body);
       callback(bot,bodyParsed.direct.visible);
+    } else {
+      callback(bot, help("The provided template does not exits. \n"))
     }
   })
 return "...";
@@ -103,12 +106,11 @@ var reply = function(command,bot, callback){
   } else {
     return help();
   }
-  return "To be implemented";
 }
 
 // There should be a default help option for each script
-var help = function(){
-  return "USAGE: -meme [templateLink / template name] [Top Message; Lower Message]  \n To get the template links visit - http://memegen.link/templates/ or write -meme [template]";
+var help = function(extraMessage){
+  return (extraMessage != null) ? extraMessage : "MEME Genrator" + " USAGE: -meme [templateLink / template name] [Top Message; Lower Message]  \n To get the template links visit - http://memegen.link/templates/ or write -meme [template]";
 }
 
 // This runs any default functionality required by the script

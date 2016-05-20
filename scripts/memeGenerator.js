@@ -1,7 +1,7 @@
 /*
   Meme Generator: This script craetes memes based on the templates provided.
   ToDo: Add image post functionality instead of the current image URL
-  ToDo: Store the templates so that aliases can be used instead of the actual template URL
+  ToDo: Try for using aliases instead of URL or template name
 */
 
 
@@ -65,14 +65,20 @@ function getMemeTemplateLink(templateLink){
 }
 
 function getMeme (bot, callback, templateLink, upperText, lowerText){
-  request(getMemeTemplateLink(templateLink) + '/' + upperText + '/' + lowerText , function (error, response, body) {
+  request(getMemeTemplateLink(templateLink) + '/' + upperText + '/' + lowerText , (error, response, body) => {
     if (!error && response.statusCode == 200) {
       bodyParsed = JSON.parse(body);
+      request(bodyParsed.direct.visible, {encoding: 'binary'}, (error, response, body) => {
+        fs.writeFile('downloaded.jpg', body, 'binary', function (err) {});
+        var encodedImage = new Buffer(body, 'binary').toString('base64');
+        callback(bot,{"type": "Image", "binaryContent": body});
+      })
+
       callback(bot,bodyParsed.direct.visible);
     } else {
       callback(bot, help("The provided template does not exits. \n"))
     }
-  })
+  });
 return "...";
 }
 
@@ -125,7 +131,6 @@ var wakeUp = function(){
     populateFileData();
   }
 }
-
 
 module.exports = {
     reply, help, wakeUp

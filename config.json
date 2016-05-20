@@ -5,6 +5,7 @@
   "APP_Password":"HibjbxKeGhFN45Meqa2QVm8",
   "scripts" : {
     "meme" : "./scripts/memeGenerator.js",
+    "myData" : "./scripts/usersData.js",
     "default" : "./scripts/hodor.js"
   }
 }

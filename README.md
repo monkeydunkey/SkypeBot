@@ -23,3 +23,4 @@ To add functionality follow the steps below:
 Currently the bot has the following functionalites:
  1) Hodor - replies hodor to anything
  2) Meme Generator - This return a link to image that is generated using the template and text provided
+ 3) Save User Data - This allows users to save and retrieve textual data

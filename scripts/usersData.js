@@ -27,28 +27,37 @@ getUserData = function (sSkypeUserName, sRequest, oCallback, callback) {
     if (err) {
       sendMessageToBot(oCallback, "You haven't saved anything yet.");
     }
-      else callback(data, sRequest, oCallback);
+      else if(!JSON.parse(data).oUserData){
+        sendMessageToBot(oCallback, "You haven't saved anything yet.");
+      } else
+        callback(data, sRequest, oCallback);
     });
 }
 
 saveUserData = function(sSkypeUserName, sKey, sMessage, oCallback){
   fs.readFile(sFolderLocation+sSkypeUserName+'.json', (err, data) => {
-    var userData;
+    var oUserData,
+        oFileData;
     if (err) {
-      userData = {};
-      userData[sKey] = sMessage;
-      populateFileData(sSkypeUserName, userData, oCallback);
+      oFileData = {};
+      oFileData.oUserData = {};
+      oFileData.oUserData[sKey] = sMessage;
+      populateFileData(sSkypeUserName, oFileData, oCallback);
     }
     else {
-      userData = JSON.parse(data);
-      userData[sKey] = sMessage;
-      populateFileData(sSkypeUserName, userData, oCallback);
+      oFileData = JSON.parse(data);
+      if(!oFileData.userData){
+        oFileData.oUserData = {};
+      }
+      oFileData.oUserData[sKey] = sMessage;
+      populateFileData(sSkypeUserName, oFileData, oCallback);
     }
     });
 }
 processUserData = function(data, sRequest, oCallback) {
-  var userData = JSON.parse(data),
-      sResponse = (userData.hasOwnProperty(sRequest))?userData[sRequest]:"I dont have any information for "+sRequest;
+  var oFileData = JSON.parse(data),
+      oUserData = oFileData.oUserData;
+      sResponse = (oUserData.hasOwnProperty(sRequest))?oUserData[sRequest]:"I dont have any information for "+sRequest;
       sendMessageToBot(oCallback, sResponse);
 }
 
@@ -62,7 +71,7 @@ var reply = function(command, bot, callback){
     {
       return help();
     } else {
-      return help('The comamnd entered is invalid. Please use the command below. \n');
+      return help('The command entered is invalid. Please use the command below. \n');
     }
   } else if(commandList.length > 0 ) {
     if(commandList[0].indexOf('save') > 0){

@@ -1,6 +1,8 @@
-# SkypeBot
+# Skypebot
 Its an experimental skype bot that is based on the latest bot framework released by Microsoft.
 To know about the framework visit - https://developer.microsoft.com/en-us/skype/bots
+
+Follow the following steps to build your own bot - https://developer.microsoft.com/en-us/skype/bots/docs/tutorials/simple-nodejs
 
 The bot is designed in a way that anyone can add there own functionalites.
 To add functionality follow the steps below:

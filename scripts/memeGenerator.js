@@ -60,7 +60,7 @@ function getTemplates (bot, callback){
 }
 
 function getMemeTemplateLink(templateLink){
-  var link = (templateLink.indexOf('http://memegen.link/templates/') > 0) ? templateLink : oLinkAlias.hasOwnProperty(templateLink) ? oLinkAlias[templateLink] : "na";
+  var link = (templateLink.indexOf('http://memegen.link/templates/') != -1) ? templateLink : oLinkAlias.hasOwnProperty(templateLink) ? oLinkAlias[templateLink] : "na";
   return link;
 }
 
